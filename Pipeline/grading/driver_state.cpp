@@ -42,13 +42,15 @@ void render(driver_state& state, render_type type)
             for (int j = 0; j < 3; j++) {
                 data_geometry *d_g = new data_geometry();
                 data_vertex d_v;
+                d_v.data = new float[MAX_FLOATS_PER_VERTEX];
                 d_g->data = new float[MAX_FLOATS_PER_VERTEX];
                 for (int i = 0; i < state.floats_per_vertex; i++) {
                     d_g->data[i] = state.vertex_data[i + j * 3];
-                }   
-                in[j] = d_g;
+                    d_v.data[i] = state.vertex_data[i + j * 3];
+                }
                 
                 state.vertex_shader(d_v, *d_g, state.uniform_data);
+                in[j] = d_g;
             } 
             
             rasterize_triangle(state, in);  
@@ -86,8 +88,6 @@ void rasterize_triangle(driver_state& state, const data_geometry* in[3])
         for (int i = 0; i < MAX_FLOATS_PER_VERTEX; i++) {
             dv.data[i] = in[j]->data[i];
         }
-
-        //state.vertex_shader(dv, dg, state.uniform_data);
         points[j] = vec4(dv.data[0], dv.data[1], 0.0, 0.0);
     }
 
