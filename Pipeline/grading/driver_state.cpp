@@ -88,19 +88,19 @@ void rasterize_triangle(driver_state& state, const data_geometry* in[3])
         for (int i = 0; i < MAX_FLOATS_PER_VERTEX; i++) {
             dv.data[i] = in[j]->data[i];
         }
-        points[j] = vec4(dv.data[0], dv.data[1], 0.0, 0.0);
+        points[j] = vec4(dv.data[0], dv.data[1], 0.0, dv.data[3]);
     }
 
     int width = state.image_width;
     int height = state.image_height;
 
     // from NDC to pixel space
-    float a_x = 0.5 * (1 + points[0][0]) * width;
-    float a_y = 0.5 * (1 + points[0][1]) * height;
-    float b_x = 0.5 * (1 + points[1][0]) * width;
-    float b_y = 0.5 * (1 + points[1][1]) * height;
-    float c_x = 0.5 * (1 + points[2][0]) * width;
-    float c_y = 0.5 * (1 + points[2][1]) * height;
+    float a_x = 0.5 * (1 + points[0][0]) * width - 0.5;
+    float a_y = 0.5 * (1 + points[0][1]) * height - 0.5;
+    float b_x = 0.5 * (1 + points[1][0]) * width - 0.5;
+    float b_y = 0.5 * (1 + points[1][1]) * height - 0.5;
+    float c_x = 0.5 * (1 + points[2][0]) * width - 0.5;
+    float c_y = 0.5 * (1 + points[2][1]) * height - 0.5;
 
     float p_x, p_y;
     float alpha, beta, gamma;
