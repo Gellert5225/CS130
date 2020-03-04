@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/Users/gellertli/Desktop/CS130/lab06/build",
+  "command": "/usr/bin/clang++   -I/usr/local/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk   -std=gnu++11 -o CMakeFiles/textures.dir/gl_arcball.cpp.o -c /Users/gellertli/Desktop/CS130/lab06/gl_arcball.cpp",
+  "file": "/Users/gellertli/Desktop/CS130/lab06/gl_arcball.cpp"
+},
+{
+  "directory": "/Users/gellertli/Desktop/CS130/lab06/build",
+  "command": "/usr/bin/clang++   -I/usr/local/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk   -std=gnu++11 -o CMakeFiles/textures.dir/gl_viewer.cpp.o -c /Users/gellertli/Desktop/CS130/lab06/gl_viewer.cpp",
+  "file": "/Users/gellertli/Desktop/CS130/lab06/gl_viewer.cpp"
+},
+{
+  "directory": "/Users/gellertli/Desktop/CS130/lab06/build",
+  "command": "/usr/bin/clang++   -I/usr/local/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk   -std=gnu++11 -o CMakeFiles/textures.dir/main.cpp.o -c /Users/gellertli/Desktop/CS130/lab06/main.cpp",
+  "file": "/Users/gellertli/Desktop/CS130/lab06/main.cpp"
+},
+{
+  "directory": "/Users/gellertli/Desktop/CS130/lab06/build",
+  "command": "/usr/bin/clang++   -I/usr/local/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk   -std=gnu++11 -o CMakeFiles/textures.dir/application.cpp.o -c /Users/gellertli/Desktop/CS130/lab06/application.cpp",
+  "file": "/Users/gellertli/Desktop/CS130/lab06/application.cpp"
+},
+{
+  "directory": "/Users/gellertli/Desktop/CS130/lab06/build",
+  "command": "/usr/bin/clang++   -I/usr/local/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk   -std=gnu++11 -o CMakeFiles/textures.dir/obj.cpp.o -c /Users/gellertli/Desktop/CS130/lab06/obj.cpp",
+  "file": "/Users/gellertli/Desktop/CS130/lab06/obj.cpp"
+}
+]

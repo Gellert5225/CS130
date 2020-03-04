@@ -38,22 +38,33 @@ void render(driver_state& state, render_type type)
 {
     switch (type){
         case render_type::triangle: {
-            const data_geometry* in[3];
-            for (int j = 0; j < 3; j++) {
-                data_geometry *d_g = new data_geometry();
-                data_vertex d_v;
-                d_v.data = new float[MAX_FLOATS_PER_VERTEX];
-                d_g->data = new float[MAX_FLOATS_PER_VERTEX];
-                for (int i = 0; i < state.floats_per_vertex; i++) {
-                    d_g->data[i] = state.vertex_data[i + j * 3];
-                    d_v.data[i] = state.vertex_data[i + j * 3];
-                }
-                
-                state.vertex_shader(d_v, *d_g, state.uniform_data);
-                in[j] = d_g;
-            } 
+            // printf("number of triangles: %i\n", state.num_vertices / 3);
+            // printf("vertex data:\n");
+            // for (int i = 0; i < state.num_vertices; i++) {
+            //     for (int j = 0; j < state.floats_per_vertex; j++){
+            //         printf("%f ", state.vertex_data[j + i * state.floats_per_vertex]);
+            //     }
+            //     printf("\n");
+            // }
             
-            rasterize_triangle(state, in);  
+            for (int k = 0; k < state.num_vertices / 3; k++) { // for each triangle
+                const data_geometry* in[3]; 
+                for (int j = 0; j < 3; j++) { // for each vertex
+                    data_geometry *d_g = new data_geometry();
+                    data_vertex d_v;
+                    d_v.data = new float[MAX_FLOATS_PER_VERTEX];
+                    d_g->data = new float[MAX_FLOATS_PER_VERTEX];
+                    for (int i = 0; i < state.floats_per_vertex; i++) { // for each float in vertex
+                        d_g->data[i] = state.vertex_data[i + j * state.floats_per_vertex + k * state.floats_per_vertex * 3];
+                        d_v.data[i] = state.vertex_data[i + j * state.floats_per_vertex + k * state.floats_per_vertex * 3];
+                    }
+                    state.vertex_shader(d_v, *d_g, state.uniform_data);
+                    in[j] = d_g;
+                } 
+                
+                rasterize_triangle(state, in);
+            }
+              
             break;
         }
         default:
@@ -81,26 +92,31 @@ void clip_triangle(driver_state& state, const data_geometry* in[3], int face)
 void rasterize_triangle(driver_state& state, const data_geometry* in[3])
 {
     vec4 points[3];
+    // printf("float per vertex: %i\n", state.floats_per_vertex);
+    
     for (int j = 0; j < 3; j++) {
         data_geometry dg;
         data_vertex dv; 
         dv.data = new float[MAX_FLOATS_PER_VERTEX];
-        for (int i = 0; i < MAX_FLOATS_PER_VERTEX; i++) {
-            dv.data[i] = in[j]->data[i];
+        for (int i = 0; i < 4; i++) {
+            dv.data[i] = in[j]->gl_Position[i];
+            //printf("%f ", in[j]->data[i]);
         }
-        points[j] = vec4(dv.data[0], dv.data[1], 0.0, 0.0);
+        //printf("\n");
+        points[j] = vec4(dv.data[0]/dv.data[3], dv.data[1]/dv.data[3], dv.data[2]/dv.data[3], dv.data[3]);
     }
-
+    
+    
     int width = state.image_width;
     int height = state.image_height;
 
     // from NDC to pixel space
-    float a_x = 0.5 * (1 + points[0][0]) * width;
-    float a_y = 0.5 * (1 + points[0][1]) * height;
-    float b_x = 0.5 * (1 + points[1][0]) * width;
-    float b_y = 0.5 * (1 + points[1][1]) * height;
-    float c_x = 0.5 * (1 + points[2][0]) * width;
-    float c_y = 0.5 * (1 + points[2][1]) * height;
+    float a_x = 0.5 * (1 + points[0][0]) * width - 0.5;
+    float a_y = 0.5 * (1 + points[0][1]) * height - 0.5;
+    float b_x = 0.5 * (1 + points[1][0]) * width - 0.5;
+    float b_y = 0.5 * (1 + points[1][1]) * height - 0.5;
+    float c_x = 0.5 * (1 + points[2][0]) * width - 0.5;
+    float c_y = 0.5 * (1 + points[2][1]) * height - 0.5;    
 
     float p_x, p_y;
     float alpha, beta, gamma;
@@ -121,7 +137,33 @@ void rasterize_triangle(driver_state& state, const data_geometry* in[3])
         gamma = (dot(v0, v0) * dot(v2, v1) - dot(v0, v1) * dot(v2, v0)) / ABC;
         alpha = 1.0 - beta - gamma;
 
-        if (beta >= 0 && gamma >= 0 && alpha >= 0) 
-            state.image_color[p] = make_pixel(255, 255, 255);
+        // color pixel
+        if (beta >= 0 && gamma >= 0 && alpha >= 0) {
+
+            // interpolation
+            data_fragment df;
+            df.data = new float[MAX_FLOATS_PER_VERTEX];
+            data_output out;
+            for (int i = 0; i < state.floats_per_vertex; i++) {
+                switch (state.interp_rules[i])
+                {
+                case interp_type::flat:
+                    df.data[i] = in[0]->data[i];
+                    break;
+                case interp_type::smooth:
+                    break;
+                case interp_type::noperspective: 
+                    df.data[i] = alpha * in[0]->data[i] + beta * in[1]->data[i] + gamma * in[2]->data[i];
+                    break;
+                default:
+                    break;
+                }
+            
+            }
+            state.fragment_shader(df, out, state.uniform_data);
+            state.image_color[p] = make_pixel(out.output_color[0] * 255.0, 
+            out.output_color[1] * 255.0, 
+            out.output_color[2] * 255.0);
+        }
     }
 }
