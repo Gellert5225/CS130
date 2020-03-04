@@ -1,0 +1,3 @@
+/Users/gellertli/Desktop/CS130/lab06/CMakeFiles/rebuild_cache.dir
+/Users/gellertli/Desktop/CS130/lab06/CMakeFiles/edit_cache.dir
+/Users/gellertli/Desktop/CS130/lab06/CMakeFiles/textures.dir

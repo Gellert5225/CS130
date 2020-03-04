@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/gellertli/Desktop/CS130/lab06/obj.cpp
+obj.h
+/Users/gellertli/Desktop/CS130/lab06/obj.h
+cstring
+-
+fstream
+-
+sstream
+-
+iostream
+-
+
+/Users/gellertli/Desktop/CS130/lab06/obj.h
+cassert
+-
+map
+-
+string
+-
+vector
+-
+iostream
+-
+
